@@ -3,6 +3,19 @@ import java.util.stream.Collectors;
 
 public class InterviewQuestions {
 
+	public static double whatAngle(int hours, int minutes, int clockType) {
+        double hourIncrement = 360/clockType;
+        double miniteIncrement = 60/minutes;
+        
+        double minuteNormalClockNumber = clockType/miniteIncrement;
+        
+        double hourAngle = hours == 12 ? 0 : hours * hourIncrement;
+    
+        double angle = (minuteNormalClockNumber - hourAngle) * 30;
+        return Math.abs(angle);
+
+    }
+
     public static int howLong(int[][] grid, int xAxis, int yAxis){
 		List<int[]> valuesToINcrement = new ArrayList<>();
 		for (int i = 0; i < grid.length; i++) {
@@ -702,6 +715,9 @@ public class InterviewQuestions {
         System.out.println(gcd);
         System.out.println(list);
         System.out.println("{1,0,0,0,0,1,0,0}");
-        System.out.println("{0,1,0,0,1,0,1,0}");
+		System.out.println("{0,1,0,0,1,0,1,0}");
+		
+
+		System.out.println(String.format("The angle of the hands on the clock for 12:30 is %s",whatAngle(12, 30, 12)));
     }
 }
