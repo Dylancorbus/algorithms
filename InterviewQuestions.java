@@ -680,45 +680,6 @@ public class InterviewQuestions {
 //        }
         System.out.println("\n" + howLong(grid, grid[0].length, 100) + " hours to get files to all servers ");
 
-<<<<<<< HEAD
-//        System.out.println(validate("[({}){{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}]"));
-//
-//        System.out.println(kMostFrequent(new int[]{2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 8, 8,}, 2));
-
-
-
-//		int[] array = {1,0,0,0,0,1,0,0};
-//        int[] ints = {1012, 56000, 100001, 500124};
-//
-//
-//
-//
-//
-//        List<String> possible = new ArrayList<>();
-//        List<String> req = new ArrayList<>();
-//        possible.add("storage");
-//        possible.add("battery");
-//        possible.add("hover");
-//        possible.add("alexa");
-//        possible.add("waterproof");
-//        possible.add("solar");
-//        req.add("i want Storage");
-//        req.add("neeed battery");
-//        req.add("Hover");
-//        req.add("Alexa");
-//        req.add("Waterproof");
-//        req.add("Solar");
-//        req.add("Solar");
-//
-//
-//        List<Integer> list = cellCompete(array, 1);
-//        double gcd = findGCD(ints, ints.length);
-//        System.out.println(popularNFeatures(possible.size(), 2, possible, req.size(), req));
-//        System.out.println(gcd);
-//        System.out.println(list);
-//        System.out.println("{1,0,0,0,0,1,0,0}");
-//        System.out.println("{0,1,0,0,1,0,1,0}");
-=======
         System.out.println(validate("[({}){{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}]"));
 
         System.out.println(kMostFrequent(new int[]{2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 8, 8,}, 2));
@@ -759,6 +720,5 @@ public class InterviewQuestions {
 		
 
 		System.out.println(String.format("The angle of the hands on the clock for 12:30 is %s",whatAngle(12, 30, 12)));
->>>>>>> 0d64c33df52e07cea7dfc6de58f59d197a4ffa55
     }
 }
