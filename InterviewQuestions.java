@@ -33,7 +33,7 @@ public class InterviewQuestions {
 				incrementAdjacent(grid, valuesToINcrement, newList, i, xAxis, yAxis, serversWithoutTheFile);
 				forCounter++;
 			}
-//			newList.forEach(arr -> System.out.println(arr[0] + "  " + arr[1]));
+			newList.forEach(arr -> System.out.println(arr[0] + "  " + arr[1]));
 			valuesToINcrement = newList;
 			serversWithoutTheFile = serversWithoutTheFile - newList.size();
 //			System.out.println("servers left" + serversWithoutTheFile);
@@ -45,12 +45,13 @@ public class InterviewQuestions {
 			}
 			System.out.println();
 		}
-//		System.out.println(forCounter);
+		System.out.println(forCounter);
 //		System.out.println("N = " + xAxis * yAxis + "| interations = " + (forCounter + counter));
 		return counter;
 	}
 
-	private static void incrementAdjacent(int[][] grid, List<int[]> incrementedValues, List<int[]> newList, int i, int rows, int colums, int serversWithoutFile) {
+	private static void incrementAdjacent(int[][] grid, List<int[]> incrementedValues, List<int[]> newList, int i, int rows, int colums) {
+    	if ()
 		int x = incrementedValues.get(i)[0];
 		int y = incrementedValues.get(i)[1];
 //		System.out.println("X = " + x + "| Y = " + y);
@@ -655,53 +656,53 @@ public class InterviewQuestions {
 //		grid[4] = ar5;
 
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-
-
-                System.out.print(grid[i][j]);
-
-            }
-            System.out.println();
-        }
+//        for (int i = 0; i < grid.length; i++) {
+//            for (int j = 0; j < grid[i].length; j++) {
+//
+//
+//                System.out.print(grid[i][j]);
+//
+//            }
+//            System.out.println();
+//        }
         System.out.println("\n" + howLong(grid, grid[0].length, 100) + " hours to get files to all servers ");
 
-        System.out.println(validate("[({}){{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}]"));
-
-        System.out.println(kMostFrequent(new int[]{2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 8, 8,}, 2));
-
-
-
-		int[] array = {1,0,0,0,0,1,0,0};
-        int[] ints = {1012, 56000, 100001, 500124};
+//        System.out.println(validate("[({}){{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}]"));
+//
+//        System.out.println(kMostFrequent(new int[]{2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 8, 8,}, 2));
 
 
 
-
-
-        List<String> possible = new ArrayList<>();
-        List<String> req = new ArrayList<>();
-        possible.add("storage");
-        possible.add("battery");
-        possible.add("hover");
-        possible.add("alexa");
-        possible.add("waterproof");
-        possible.add("solar");
-        req.add("i want Storage");
-        req.add("neeed battery");
-        req.add("Hover");
-        req.add("Alexa");
-        req.add("Waterproof");
-        req.add("Solar");
-        req.add("Solar");
-
-
-        List<Integer> list = cellCompete(array, 1);
-        double gcd = findGCD(ints, ints.length);
-        System.out.println(popularNFeatures(possible.size(), 2, possible, req.size(), req));
-        System.out.println(gcd);
-        System.out.println(list);
-        System.out.println("{1,0,0,0,0,1,0,0}");
-        System.out.println("{0,1,0,0,1,0,1,0}");
+//		int[] array = {1,0,0,0,0,1,0,0};
+//        int[] ints = {1012, 56000, 100001, 500124};
+//
+//
+//
+//
+//
+//        List<String> possible = new ArrayList<>();
+//        List<String> req = new ArrayList<>();
+//        possible.add("storage");
+//        possible.add("battery");
+//        possible.add("hover");
+//        possible.add("alexa");
+//        possible.add("waterproof");
+//        possible.add("solar");
+//        req.add("i want Storage");
+//        req.add("neeed battery");
+//        req.add("Hover");
+//        req.add("Alexa");
+//        req.add("Waterproof");
+//        req.add("Solar");
+//        req.add("Solar");
+//
+//
+//        List<Integer> list = cellCompete(array, 1);
+//        double gcd = findGCD(ints, ints.length);
+//        System.out.println(popularNFeatures(possible.size(), 2, possible, req.size(), req));
+//        System.out.println(gcd);
+//        System.out.println(list);
+//        System.out.println("{1,0,0,0,0,1,0,0}");
+//        System.out.println("{0,1,0,0,1,0,1,0}");
     }
 }
