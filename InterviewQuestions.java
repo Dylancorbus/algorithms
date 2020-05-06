@@ -43,7 +43,7 @@ public class InterviewQuestions {
 //			System.out.println("SERVERS WITHOUT FILES  " + serversWithoutTheFile);
 			for (int i = 0; i < valuesToINcrement.size(); i++) {
 //				System.out.println("checking this coord " + valuesToINcrement.get(i)[0] + ", " + valuesToINcrement.get(i)[1]);
-				incrementAdjacent(grid, valuesToINcrement, newList, i, xAxis, yAxis, serversWithoutTheFile);
+				incrementAdjacent(grid, valuesToINcrement, newList, i, xAxis, yAxis);
 				forCounter++;
 			}
 			newList.forEach(arr -> System.out.println(arr[0] + "  " + arr[1]));
@@ -64,7 +64,6 @@ public class InterviewQuestions {
 	}
 
 	private static void incrementAdjacent(int[][] grid, List<int[]> incrementedValues, List<int[]> newList, int i, int rows, int colums) {
-    	if ()
 		int x = incrementedValues.get(i)[0];
 		int y = incrementedValues.get(i)[1];
 //		System.out.println("X = " + x + "| Y = " + y);
