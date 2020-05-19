@@ -267,6 +267,40 @@ public class InterviewQuestions {
 		}
 	}
 
+	class Node {
+		Node next;
+		public Node(Node next) {
+			this.next = next;
+		}
+
+		public Node getNext() {
+			return next;
+		}
+
+		public void setNext(Node next) {
+			this.next = next;
+		}
+	}
+
+	public static Node reverse(Node node) {
+		Node current = null;
+		Node previous = null;
+		Node next = node;
+		//while we have more nodes to flip
+		while(next != null) {
+			//get the next node and assign it as the current one
+			current = next;
+			//set the next node to the node current points to
+			next = current.next;
+			//make current point to the previous node
+			current.next = previous;
+			//assign previous to the last processed node which is current
+			previous = current;
+		}
+		//return the last processed node which is previous
+		return previous;
+	}
+
 
 
     public static String validate(String bracesBracketsParentheses) {

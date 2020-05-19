@@ -49,14 +49,12 @@ public class TreeTraversal {
 	}
 
     public static int depthFirstSearchTree(Node node, int find) {
-		if(node != null) {
 			if(node.data == find) return node.data;
 			int left = depthFirstSearchTree(node.leftNode, find);
 			int right = depthFirstSearchTree(node.rightNode, find);
 			if( left == find) return left;
 			if(right == find) return right;
-		}
-		return 0;
+			return 0;
 
 	}
 
