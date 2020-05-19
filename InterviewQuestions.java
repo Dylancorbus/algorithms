@@ -22,7 +22,7 @@ public class InterviewQuestions {
 			for (int j = 0; j < grid[i].length; j++) {
 				if (grid[i][j] == 1) {
 					int[] coords = new int[2];
-//					System.out.println("STORING THESE COORDS  x:" + j + "| y:" + i);
+					System.out.println("STORING THESE COORDS  x:" + j + "| y:" + i);
 					coords[0] = j;
 					coords[1] = i;
 					valuesToINcrement.add(coords);
@@ -39,17 +39,17 @@ public class InterviewQuestions {
 		while (serversWithoutTheFile > 0) {
 			List<int[]> newList = new ArrayList<>();
 			counter++;
-//			System.out.println("ITERATION  " + counter);
-//			System.out.println("SERVERS WITHOUT FILES  " + serversWithoutTheFile);
+			System.out.println("ITERATION  " + counter);
+			System.out.println("SERVERS WITHOUT FILES  " + serversWithoutTheFile);
 			for (int i = 0; i < valuesToINcrement.size(); i++) {
-//				System.out.println("checking this coord " + valuesToINcrement.get(i)[0] + ", " + valuesToINcrement.get(i)[1]);
-				incrementAdjacent(grid, valuesToINcrement, newList, i, xAxis, yAxis);
+				System.out.println("checking this coord " + valuesToINcrement.get(i)[0] + ", " + valuesToINcrement.get(i)[1]);
+				exploreNeighboringCells(grid, valuesToINcrement, newList, i, xAxis, yAxis);
 				forCounter++;
 			}
 			newList.forEach(arr -> System.out.println(arr[0] + "  " + arr[1]));
 			valuesToINcrement = newList;
 			serversWithoutTheFile = serversWithoutTheFile - newList.size();
-//			System.out.println("servers left" + serversWithoutTheFile);
+			System.out.println("servers left" + serversWithoutTheFile);
 		}
 
 		for (int i = 0; i < grid.length; i++) {
@@ -59,211 +59,43 @@ public class InterviewQuestions {
 			System.out.println();
 		}
 		System.out.println(forCounter);
-//		System.out.println("N = " + xAxis * yAxis + "| interations = " + (forCounter + counter));
+		System.out.println("N = " + xAxis * yAxis + "| interations = " + (forCounter + counter));
 		return counter;
 	}
 
-	private static void incrementAdjacent(int[][] grid, List<int[]> incrementedValues, List<int[]> newList, int i, int rows, int colums) {
-		int x = incrementedValues.get(i)[0];
-		int y = incrementedValues.get(i)[1];
-//		System.out.println("X = " + x + "| Y = " + y);
+	private static void exploreNeighboringCells(int[][] grid, List<int[]> incrementedValues, List<int[]> newList, int j, int rows, int colums) {
+		//neighboring cell coordinates
+		int xx, yy;
+		int currentX = incrementedValues.get(j)[0];
+		int currentY = incrementedValues.get(j)[1];
+
+		//directions for x and y N, S, E, W
+		//direction x
+		int[] dx = new int[] {-1, 1, 0, 0};
+		//direction y
+		int[] dy = new int[] {0, 0, 1, -1};
+
 		int[] addToKeepTrack = new int[2];
-		if(x == 0 & y == 0) {
-//			System.out.println("first");
-			if(grid[y][x + 1] == 0) {
-				//x + 1 and y
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			//x and y + 1
-			if(grid[y + 1][x] == 0) {
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-		} else if(x == rows - 1 & y == colums - 1) {
-//			System.out.println("second");
-			//x - 1 and y
-			if(grid[y][x - 1] == 0) {
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			//x and y - 1
-			if(grid[y - 1][x] == 0) {
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
 
+		//for each neighboring cell N,S,E,W
+		for (int i = 0; i < 4; i++) {
 
-		} else if(x == rows - 1 & y == 0) {
-//			System.out.println("third");
-			//x - 1 and y
-			if(grid[y][x - 1] == 0) {
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			//x and y + 1
-			if(grid[y + 1][x] == 0) {
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
+			//grab the neighboring cell coordinates
+			xx = currentX + dx[i];
+			yy = currentY + dy[i];
 
+			//skip out of bounds locations
+			if(xx < 0 || yy < 0) continue;
+			if(xx >= grid[0].length || yy >= grid.length) continue;
 
-		} else if(x == 0 & y == colums -1) {
-//			System.out.println("fourth");
-			//x + 1 and y
-			if(grid[y][x + 1] == 0) {
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			//x and y - 1
-			if(grid[y - 1][x] == 0) {
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
-		} else if(x == 0 & (y > 0 & y < colums - 1)) {
-//			System.out.println("fifth");
-			if(grid[y][x + 1] == 0) {
-				//x + 1 and y
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y - 1][x] == 0) {
-				//x and y - 1
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y + 1][x] == 0) {
-				//x and y + 1
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
-		} else if(x == rows - 1 & (y > 0 & y < colums - 1)) {
-//			System.out.println("sixth");
-			if(grid[y][x - 1] == 0) {
-				//x - 1 and y
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y - 1][x] == 0) {
-				//x and y - 1
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y + 1][x] == 0) {
-				//x and y + 1
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
-		} else if((x > 0 & x < rows - 1) & y == 0) {
-//			System.out.println("seventh");
-			if(grid[y][x - 1] == 0) {
-				//x - 1 and y
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y][x + 1] == 0) {
-				//x + 1 and y
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y + 1][x] == 0) {
-				//x and y + 1
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
-		} else if((x > 0 & x < rows - 1) & y == colums -1) {
-//			System.out.println("eight");
-			if(grid[y][x - 1] == 0) {
-				//x - 1 and y
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y][x + 1] == 0) {
-				//x + 1 and y
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y - 1][x] == 0) {
-				//x and y - 1
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
-		} else if((x > 0 & x < rows - 1) & (y > 0 & y < colums -1)){
-//			System.out.println("9th");
-			if(grid[y][x - 1] == 0) {
-				//x - 1 and y
-				grid[y][x - 1] = 1;
-				addToKeepTrack[0] = x - 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y][x + 1] == 0) {
-				//x + 1 and y
-				grid[y][x + 1] = 1;
-				addToKeepTrack[0] = x + 1;
-				addToKeepTrack[1] = y;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y - 1][x] == 0) {
-				//x and y - 1
-				grid[y - 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y - 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-			if(grid[y + 1][x] == 0) {
-				//x and y + 1
-				grid[y + 1][x] = 1;
-				addToKeepTrack[0] = x;
-				addToKeepTrack[1] = y + 1;
-				newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
-			}
-
+			//dont increment servers with the file
+			if(grid[yy][xx] == 1) continue;
+			//set server that now has the file to 1
+			grid[yy][xx] = 1;
+			//add it to keep track of it
+			addToKeepTrack[0] = xx;
+			addToKeepTrack[1] = yy;
+			newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
 		}
 	}
 
