@@ -1,10 +1,10 @@
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class GraphTheory {
 
     static class Steps {
-        List<String> steps;
+        List<int[]> steps;
+        String[] nodeOrder;
         int count;
 
         public Steps() {
@@ -12,16 +12,30 @@ public class GraphTheory {
             this.count = 0;
         }
 
-        public List<String> getSteps() {
+        public Steps(int i) {
+            this.steps = new ArrayList<>();
+            this.count = 0;
+            this.nodeOrder = new String[i];
+        }
+
+        public String[] getNodeOrder() {
+            return nodeOrder;
+        }
+
+        public void setNodeOrder(String[] nodeOrder) {
+            this.nodeOrder = nodeOrder;
+        }
+
+        public List<int[]> getSteps() {
             return steps;
         }
 
-        public void setSteps(List<String> steps) {
+        public void setSteps(List<int[]> steps) {
             this.steps = steps;
         }
 
         public Steps addSteps(int x, int y) {
-            this.steps.add("(" + x + "," + y + ")");
+            this.steps.add(new int[]{x, y});
             return this;
         }
 
@@ -38,7 +52,7 @@ public class GraphTheory {
         }
 
         public Steps notFound() {
-            steps.add(0, "NO WAY TO REACH THE END ");
+            steps = null;
             return this;
         }
 
@@ -46,14 +60,52 @@ public class GraphTheory {
         public String toString() {
             StringBuilder builder = new StringBuilder();
             for (int i = steps.size() - 1; i >= 0; i--) {
-                if(i != 0) builder.append(steps.get(i) + " -> ");
+                if(i != 0) builder.append(steps.get(i)[1] + "," +steps.get(i)[0]  + " -> ");
                 else builder.append(steps.get(i));
             }
             return builder.toString() + " " + this.count + " STEPS";
         }
     }
 
-    public Steps solve(String[][] grid, int[] start, int[] end) {
+
+    public Steps sortDependencyGraph(Map<String, String[]> adjList) {
+        //get the nodes in the graph
+        String[] nodes = adjList.keySet().toArray(new String[]{});
+        Map<String, Boolean> visited = new HashMap<>();
+        //reate the result array with a size the same as # of nodes
+        Steps steps = new Steps(nodes.length);
+        //i is the node we are currently processing
+        int lastI = 0;
+        for (int i = 0; i < nodes.length; i++) {
+            //if we havent visited the node visit it
+            if(!visited.containsKey(nodes[i])) {
+                //search the node
+                lastI = dfs(adjList, nodes, i, steps, visited, lastI);
+
+            }
+        }
+        return steps;
+    }
+
+    private int dfs(Map<String, String[]> adjList, String[] nodes, int at, Steps steps, Map<String, Boolean> visited, int idx) {
+        //node is now visited
+        visited.put(nodes[at], true);
+        //get nodes edges
+        String[] edges = adjList.get(nodes[at]);
+        //for each edge
+        for (int i = 0; i < edges.length; i++) {
+            //if its not visited visit it
+            if (!visited.containsKey(edges[i]))  {
+                //pass in the list, edges
+               idx = dfs(adjList, edges , i, steps, visited, idx);
+            }
+
+        }
+        steps.nodeOrder[idx] = nodes[at];
+        return idx + 1;
+    }
+
+    public Steps solveMaze(String[][] grid, int[] start, int[] end) {
         Steps steps = new Steps();
         Map<String, String> previousCells = bfs(grid, start, end, steps);
         String startKey = start[0] + "," + start[1];
@@ -146,9 +198,9 @@ public class GraphTheory {
 
         //directions for x and y N, S, E, W
         //direction x
-        int[] dx = new int[] {-1, 1, 0, 0};
+        int[] dy = new int[] {-1, 1, 0, 0};
         //direction y
-        int[] dy = new int[] {0, 0, 1, -1};
+        int[] dx = new int[] {0, 0, 1, -1};
 
         //for each neighboring cell N,S,E,W
         for (int i = 0; i < 4; i++) {
@@ -165,13 +217,14 @@ public class GraphTheory {
             if(visited.getOrDefault(visitedKey, false)) continue;
 
             //dont visit walls
-            if(grid[xx][yy].equals("#")) continue;
+            if(grid[yy][xx].equals("#")) continue;
             //add the coordinates the the queue
             xQueue.add(xx);
             yQueue.add(yy);
 
             //make it as visited
             visited.put(visitedKey, true);
+//            grid[yy][xx] = ("0");
             //previous node
             previous.put(visitedKey, currentX + "," + currentY);
             //add this neighboring node to the next layer
@@ -181,8 +234,39 @@ public class GraphTheory {
         return nodesInNextLayer;
     }
 
+
+    public static Integer GeneratePreferredNumbers(int[] listOfNotPreffered, int max, int min)
+    {
+        Random rand = new Random();
+        int randomNum;
+        int retry = 2; //increasing this lessons the likely of our non-preferred numbers to show up
+        HashSet<Integer> notPrefer = new HashSet<>();
+
+        //add all the numbers we don't want to generate into a HashSet for easy lookup
+        for(int index = 0; index < listOfNotPreffered.length; index++)
+            notPrefer.add(listOfNotPreffered[index]);
+
+        do {
+            randomNum = rand.nextInt((max - min) + 1) + min;
+            if(notPrefer.contains(randomNum))
+            {
+                retry--;
+            }
+            //we found a good value, let's return it
+            else{
+                retry = 0;
+            }
+        } while (retry > 0);
+
+        return randomNum;
+    }
+
     public static void main(String[] args) {
-        /**TODO
+        /** PATH FINDING ALGORITHM
+         * 1. FIRST DETERMINE IF A PATH EXISTS(BFS)
+         * 2. KEEP TRACK OF HOW YOU GET TO EACH NODE OR CELL
+         * 3. WHEN A PATH TO END IS FOUND REBUILD LIST OF NODES USED TO GET TO END
+         * 4. RETURN LIST REVERSED(END -> START => START -> END
          * Is there a path from start to end?
          * Find the shortest path from start node to end node
          * Given a 2d grid [][] where cells can be either . or #,
@@ -237,70 +321,117 @@ public class GraphTheory {
          * while queue is not empty go to surrounding cells
          * if cell is a .
          */
-        String[][] grid = new String[5][5];
-        grid[0][0] = ".";
-        grid[1][0] = ".";
-        grid[2][0] = "#";
-        grid[3][0] = ".";
-        grid[4][0] = ".";
+        int times = 25;
+        int[] listOfNumbers = {1, 2, 3};
+        int max = 1, min = 0;
+        String[][] grid = new String[100][100];
+        String[] strings = {
+                ".",
+                "#",
+        };
 
-        grid[0][1] = ".";
-        grid[1][1] = "#";
-        grid[2][1] = ".";
-        grid[3][1] = "#";
-        grid[4][1] = ".";
-
-        grid[0][2] = ".";
-        grid[1][2] = "#";
-        grid[2][2] = ".";
-        grid[3][2] = ".";
-        grid[4][2] = ".";
-
-        grid[0][3] = ".";
-        grid[1][3] = ".";
-        grid[2][3] = ".";
-        grid[3][3] = "#";
-        grid[4][3] = ".";
-
-        grid[0][4] = ".";
-        grid[1][4] = "#";
-        grid[2][4] = ".";
-        grid[3][4] = ".";
-        grid[4][4] = ".";
-        //set start and end for console display
+        while(times-- > 0) {
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    grid[i][j] = strings[GeneratePreferredNumbers(listOfNumbers, max, min)];
+                }
+            }
+            System.out.print(GeneratePreferredNumbers(listOfNumbers, max, min) + " ");
+        }
+        System.out.println("\n");
+//        set start and end for console display
         grid[0][0] = "S";
-        grid[4][4] = "E";
+        grid[99][99] = "E";
         System.out.println("GRAPH INPUT");
-        System.out.print(" | 0 | 1 | 2 | 3 | 4 |");
+        for (int i = 0; i < grid[0].length; i++) {
+            System.out.print(" | " + i);
+        }
+        System.out.print(" |");
         for (int y = 0; y < grid.length; y++) {
             System.out.print("\n" + y + "| ");
             for (int x = 0; x < grid[0].length; x++) {
-                System.out.print(grid[x][y] + " | ");
+                System.out.print(grid[y][x] + " | ");
             }
         }
         System.out.println("\nEND GRAPH INPUT");
         grid[0][0] = ".";
-        grid[4][4] = ".";
+        grid[99][99] = ".";
         GraphTheory graphTheory = new GraphTheory();
 
-        Steps steps = graphTheory.solve(grid, new int[]{0, 0}, new int[]{4,4});
-        List<String> path = steps.steps;
+        Steps steps = graphTheory.solveMaze(grid, new int[]{0, 0}, new int[]{99,99});
+        System.out.println(steps);
+        List<int[]> path = steps.steps;
 
         System.out.println("expected (0,0) -> (0,1) -> (0,2) -> (0,3) -> (1,3) -> (2,3) -> (2,4) -> (3,4) -> (4,4) 8 STEPS");
-        System.out.println("actual   " + steps.toString());
-        System.out.println("(0,0) -> (0,1) -> (0,2) -> (0,3) -> (1,3) -> (2,3) -> (2,4) -> (3,4) -> (4,4) 8 STEPS".equals(steps.toString()));
-        //drawing the path
+//        System.out.println("actual   " + steps.toString());
+//        System.out.println("(0,0) -> (0,1) -> (0,2) -> (0,3) -> (1,3) -> (2,3) -> (2,4) -> (3,4) -> (4,4) 8 STEPS".equals(steps.toString()));
+//        drawing the path
         for (int i = 0; i < path.size(); i++) {
-            grid[Integer.valueOf(path.get(i).substring(1, 2))][Integer.valueOf(path.get(i).substring(3, 4))] = "X";
+            grid[path.get(i)[1]][path.get(i)[0]] = "X";
         }
         System.out.println("GRAPH OUTPUT");
-        System.out.print(" | 0 | 1 | 2 | 3 | 4 |");
+        for (int i = 0; i < grid[0].length; i++) {
+            System.out.print(" |" + i);
+        }
+        System.out.print(" |");
         for (int y = 0; y < grid.length; y++) {
             System.out.print("\n" + y + "| ");
             for (int x = 0; x < grid[0].length; x++) {
-                System.out.print(grid[x][y] + " | ");
+                System.out.print(grid[y][x] + " | ");
             }
         }
         System.out.println("\nEND GRAPH OUTPUT");
+
+
+        /** GRAPH SORTING ALGORITHM(TOPOLOGICAL SORT)
+         * 1. STORE GRAPH AS AN ADJACENCY LIST(HashMap<Node,List<Node>>)
+         * 2. GET THE NUMBER OF NODES IN THE GRAPH
+         * 3. INITIALIZE A HashMap<Node,boolean> TO STORE INFO IF THE NODE WAS VISITED OR NOT
+         * 4. INITIALIZE A List<Node> TO CONTAIN THE FINAL LIST OF NODES WITH A LENGTH EQUAL TO THE NUMBER OF NODES
+         * 5. START AT THE FIRST NODE IN THE ADJ LIST AND DFS
+         * 6. IF AT FINAL NODE AND NODE HAS NOT BEEN VISITED ADD IT TO THE LIST OF NODES
+         * 7. RETURN THE ORDERED LIST OF NODES IN THE GRAPH
+         * We need to compile a large enterprise program with a lot of dependencies
+         * to external libraries. Given an adjacency list, bubbleSort the nodes in order of
+         * least dependent to most dependent nodes.
+         * {
+         *      vertx: [core, jackson, netty],
+         *      core: [oracle],
+         *      sun: [],
+         *      oracle: [sun],
+         *      netty: [nio],
+         *      nio: [sun],
+         *      jackson: [oracle]
+         * }
+         * STEPS: sun -> nio -> netty -> oracle -> core -> jackson -> vertx
+         *
+         */
+        //test input
+        Map<String, String[]> adjList = new HashMap<>();
+        adjList.put("vertx", new String[]{"core", "jackson", "netty"});
+        adjList.put("core", new String[]{"oracle"});
+        adjList.put("sun", new String[]{});
+        adjList.put("oracle", new String[]{"sun"});
+        adjList.put("netty", new String[]{"nio"});
+        adjList.put("nio", new String[]{"sun"});
+        adjList.put("jackson", new String[]{"oracle"});
+        Steps steps2 = graphTheory.sortDependencyGraph(adjList);
+        for (int i = 0; i < steps2.nodeOrder.length; i++) {
+            System.out.println(steps2.nodeOrder[i]);
+        }
+        System.out.println(Math.floor(6/4));
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.add(6);
+        pq.add(3);
+        pq.add(4);
+        pq.add(1);
+        pq.add(2);
+        pq.add(5);
+        while (!pq.isEmpty()) {
+            System.out.println(pq.poll());
+        }
+
     }
 }
