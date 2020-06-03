@@ -251,6 +251,51 @@ public class Test {
         return image;
     }
 
+    public static int[] twoNumberSum(int[] array, int targetSum) {
+        Set<Integer> compliments = new HashSet<>();
+        //time and space O(n)
+        for(int i = 0; i < array.length; i++) {
+            int compliment = targetSum - array[i];
+            if(compliments.contains(compliment)) {
+                int[] answer = new int[2];
+                answer[0] = compliment;
+                answer[1] = array[i];
+                return answer;
+            }
+            Integer[] triplet = new Integer[]{1,2,3,4};
+            compliments.add(compliment);
+        }
+        return new int[0];
+    }
+
+    public static List<Integer[]> threeNumberSum(int[] array, int targetSum) {
+        // Write your code here.
+        //[-8, -6, 1, 2, 3, 5, 6, 12]
+        //O(nlog(n))
+        Arrays.sort(array);
+        List<Integer[]> answer = new ArrayList<>();
+        int i = 0;
+        int next = i + 1;
+        int j = array.length - 1;
+        while (i < array.length - 1) {
+            if((array[i] + array[next] + array[j]) < targetSum) {
+                ++next;
+            } else if((array[i] + array[next] + array[j]) > targetSum) {
+                --j;
+            } else {
+                answer.add(new Integer[]{array[i], array[next], array[j]});
+                ++next;
+                --j;
+            }
+            if(next >= j) {
+                ++i;
+                next = i + 1;
+                j = array.length -1;
+            }
+        }
+        return answer;
+    }
+
 
     public static void main(String[] args) {
 
@@ -323,5 +368,8 @@ public class Test {
             }
             System.out.print("\n");
         }
+
+        System.out.println(Arrays.toString(Test.twoNumberSum(new int[] {3, 5, -4, 8, 11, 1, -1, 6}, 10)));
+        Test.threeNumberSum(new int[] {12, 3, 1, 2, -6, 5, -8, 6}, 0).forEach(str -> Arrays.toString(str));
     }
 }
