@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 
 public class MoneyFriend {
 
@@ -23,32 +20,11 @@ public class MoneyFriend {
             words += line.split(" ").length;
             bytes += line.getBytes().length;
         }
-        int finalBytes = bytes;
-        int finalWords = words;
-        int finalLines = lines;
-        return Stream.of(1, 2, 3).collect(toMap(k -> {
-            switch (k) {
-                case 1:
-                    return "bytes";
-                case 2:
-                    return "words";
-                case 3:
-                    return "lines";
-
-            }
-            return null;
-        }, v -> {
-            switch (v) {
-                case 1:
-                    return finalBytes;
-                case 2:
-                    return finalWords;
-                case 3:
-                    return finalLines;
-
-            }
-            return null;
-        }));
+        Map<String, Integer> map = new HashMap<>();
+        map.put("words", words);
+        map.put("bytes", bytes);
+        map.put("lines", lines);
+        return map;
     }
 
 
@@ -77,7 +53,7 @@ public class MoneyFriend {
 
         try {
             System.out.println(analyzeFile("/Users/dylancorbus/Desktop/dylancorbus.github/algorithms/lines.txt"));
-            String str = printPascalsTriangle(1000);
+            String str = printPascalsTriangle(10);
             System.out.println(str);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
