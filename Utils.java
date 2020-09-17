@@ -1,4 +1,8 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -27,5 +31,15 @@ public class Utils {
         } while (retry > 0);
 
         return randomNum;
+    }
+
+    public static List<String> readFile(String path) {
+        List<String> fileStream = null;
+        try {
+            fileStream = Files.readAllLines(Paths.get(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileStream;
     }
 }

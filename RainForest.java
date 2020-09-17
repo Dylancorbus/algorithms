@@ -1,10 +1,25 @@
+import jdk.jshell.execution.Util;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class RainForest {
     static PrintStream out = System.out;
+    //5,3,8
+    static String[] recentItems = new String[10];
+
+
+
+    public static void shift(int current, int next) {
+        if(recentItems[next] == recentItems[current])
+            recentItems[current] = recentItems[next];
+    }
 
     // METHOD SIGNATURE BEGINS, THIS METHOD IS REQUIRED
     public ArrayList<String> popularNToys(int numToys,
@@ -145,10 +160,7 @@ public class RainForest {
         return answer;
     }
 
-    public static List<String> readFile(String path) throws IOException {
-        List<String> fileStream = Files.readAllLines(Paths.get(path));
-        return fileStream;
-    }
+
 
     //implement a lru cache
 
@@ -236,6 +248,51 @@ public class RainForest {
             addToKeepTrack[0] = xx;
             addToKeepTrack[1] = yy;
             newList.add(new int[]{addToKeepTrack[0], addToKeepTrack[1]});
+        }
+    }
+
+    static class LogLine {
+        String id;
+        String path;
+        String time;
+
+        public LogLine(String str) {
+            String[] strings = str.split(" ");
+            this.id = strings[0];
+            this.path = strings[1];
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        @Override
+        public String toString() {
+            return "LogLine{" +
+                    "id='" + id + '\'' +
+                    ", path='" + path + '\'' +
+                    ", time='" + time + '\'' +
+                    '}';
         }
     }
 
@@ -506,7 +563,36 @@ public class RainForest {
             List result = test.popularNToys(6, 2, toys, quotes);
 
             out.println(result);
-            List<String> lines = RainForest.readFile("lines.txt");
+            List<String> lines = Utils.readFile("lines.txt");
+            out.println(RainForest.topN3Sequence(lines).toString());
+
+            List<String> lines2 = Utils.readFile("lines.txt");
+            Map<String, List<String>> map = lines2.stream()
+                    .map(str -> new RainForest.LogLine(str))
+                    .collect(groupingBy(RainForest.LogLine::getId, mapping(RainForest.LogLine::getPath, toList())));
+
+            Map.Entry<String, List<String>>  map2 = map.entrySet()
+                    .stream()
+                    .reduce(BinaryOperator.maxBy(Comparator.comparingInt(o -> Collections.frequency(lines, o))))
+                    .orElse(null);
+            Map.Entry<String, List<String>>  map3 = map.entrySet()
+                    .stream()
+                    .filter(stringListEntry -> !stringListEntry.getKey().equals(map2.getKey()))
+                    .reduce(BinaryOperator.maxBy(Comparator.comparingInt(o -> Collections.frequency(lines, o))))
+                    .orElse(null);
+            List<List<String>> map4 = map.entrySet()
+                    .stream()
+                    .filter(stringListEntry -> !stringListEntry.getKey().equals(map3.getKey()) && !stringListEntry.getKey().equals(map2.getKey()))
+                    .map(entry -> entry.getValue())
+                    .collect(Collectors.toList())
+                    .stream()
+                    .map(strings -> strings.stream().sorted().limit(2).collect(Collectors.toList()))
+                    .collect(Collectors.toList());
+
+            out.println(map);
+            out.println(map2);
+            out.println(map3);
+            out.println(map4);
             out.println(RainForest.topN3Sequence(lines).toString());
         } catch (Exception e) {
 
