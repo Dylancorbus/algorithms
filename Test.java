@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -134,6 +138,7 @@ public class Test {
             return true;
         }
     }
+    
 
     public boolean binarySearchIterative(int[] nums, int find) {
         boolean found = false;
@@ -242,6 +247,7 @@ public class Test {
             }
             for (int i = 0; i < image.length; i++) {
                 for (int j = 0; j < image[i].length / 2; j++) {
+//                    swap(image, i, j);
                     int temp = image[i][j];
                     image[i][j] = image[i][image[i].length - j - 1];
                     image[i][image[i].length - j - 1] = temp;
@@ -250,6 +256,143 @@ public class Test {
         }
         return image;
     }
+
+    class PriorityQueue
+    {
+
+        class Task {
+            public Task(int value, int priority) {
+                this.value = value;
+                this.priority = priority;
+            }
+            int value;
+            int priority;
+
+            @Override
+            public String toString() {
+                return value + " " + priority;
+            }
+        }
+        private Task[] heap;
+        private int heapSize, capacity;
+
+        /** Constructor **/
+        public PriorityQueue(int capacity)
+        {
+            this.capacity = capacity + 1;
+            heap = new Task[this.capacity];
+            heapSize = 0;
+        }
+
+        public boolean isEmpty()
+        {
+            return heapSize == 0;
+        }
+        public void enqueue(int x, int priority)
+        {
+            Task newJob = new Task(x, priority);
+
+            heap[++heapSize] = newJob;
+            int pos = heapSize;
+            while (pos != 1 && newJob.priority > heap[pos/2].priority)
+            {
+                heap[pos] = heap[pos/2];
+                pos /=2;
+            }
+            heap[pos] = newJob;
+        }
+        public Task dequeue()
+        {
+            int parent, child;
+            Task item, temp;
+            if (isEmpty() )
+            {
+                System.out.println("Heap is empty");
+                return null;
+            }
+
+            item = heap[1];
+            temp = heap[heapSize--];
+
+            parent = 1;
+            child = 2;
+            while (child <= heapSize)
+            {
+                if (child < heapSize && heap[child].priority < heap[child + 1].priority)
+                    child++;
+                if (temp.priority >= heap[child].priority)
+                    break;
+
+                heap[parent] = heap[child];
+                parent = child;
+                child *= 2;
+            }
+            heap[parent] = temp;
+
+            return item;
+        }
+    }
+
+    public static OrgChart getLowestCommonManager(
+            OrgChart topManager, OrgChart reportOne, OrgChart reportTwo) {
+        return dfs(topManager, reportOne, reportTwo, topManager);
+    }
+
+    static OrgChart dfs(OrgChart topManager, OrgChart reportOne, OrgChart reportTwo, OrgChart answer) {
+        if(topManager.count == 2) return topManager;
+        for(OrgChart employee: topManager.directReports) {
+            OrgChart oC = dfs(employee, reportOne, reportTwo, answer);
+            if(oC.count > 0) {
+                return oC;
+            }
+            answer = oC;
+        }
+        if(topManager.name == reportOne.name || topManager.name == reportOne.name) {
+            answer = topManager.count > 0 ? topManager: answer;
+        }
+        return answer;
+    }
+
+    static class OrgChart {
+        public char name;
+        public List<OrgChart> directReports;
+        public int count;
+
+        OrgChart(char name) {
+            this.name = name;
+            this.directReports = new ArrayList<OrgChart>();
+        }
+
+        // This method is for testing only.
+        public void addDirectReports(OrgChart ... directReports) {
+            for (OrgChart directReport : directReports) {
+                this.directReports.add(directReport);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.name);
+        }
+    }
+
+//    public static void main(String[] args) {
+//        OrgChart a = new OrgChart('a');
+//        OrgChart b = new OrgChart('b');
+//        OrgChart c = new OrgChart('c');
+//        OrgChart d = new OrgChart('d');
+//        OrgChart e = new OrgChart('e');
+//        OrgChart f = new OrgChart('f');
+//        OrgChart g = new OrgChart('g');
+//        OrgChart h = new OrgChart('h');
+//        OrgChart i = new OrgChart('i');
+//        a.addDirectReports(b, c);
+//        b.addDirectReports(d, e);
+//        c.addDirectReports(f,g);
+//        d.addDirectReports(h, i);
+//        System.out.println(Scratch.getLowestCommonManager(a, i, e).name);
+//
+//    }
 
     public List<String[]> avail(List<List<String>> cal1, List<List<String>> cal2, List<String> rang1, List<String> rang2, int duration) {
         //O(1)
@@ -344,144 +487,144 @@ public class Test {
     }
 
 
-    public static void main(String[] args) {
-
-        Node dataEntry = new Node("dataEntry", new Node[]{});
-        Node coordinator = new Node("coordinator", new Node[]{});
-        Node bookkeeper = new Node("bookkeeper", new Node[]{});
-        Node technician = new Node("technician", new Node[]{});
-        Node dataAnalyst = new Node("dataAnalyst", new Node[]{});
-        Node accountant = new Node("accountant", new Node[]{});
-        Node accountingManager = new Node("accountingManager", accountant, bookkeeper);
-        Node engineer = new Node("engineer", new Node[]{});
-        Node salesman = new Node("salesman", new Node[]{});
-        Node salesManager = new Node("salesManager", salesman, dataAnalyst, dataEntry, coordinator);
-        Node engineeringManager = new Node("engineeringManager", dataAnalyst, engineer, dataEntry, technician);
-        Node boss = new Node("ceo", salesManager, engineeringManager, accountingManager);
-        Test test = new Test();
-        //find the common boss of 2 employees
-        System.out.println(test.commonBoss(boss, "bookkeeper", "salesman"));
-        //find if there is a path between 2 nodes -> [] or [node1, node2]
-
-        System.out.println(test.numOfSteps(4, new int[]{1, 2}));
-        //1. make sure steps is over 1
-        //2. for each move 
-        //3. add move up with itself until if it equlas the num of steps
-        //4. if it does increment a counter
-        //5. return the counter
-        int[] nums = {1, 2, 4, 4};
-        int[] nums1 = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        System.out.println(test.findSum(nums, 8));
-        System.out.println(test.findSumSorted(nums, 8));
-        System.out.println(test.binarySearch(nums1, 2, 0, nums1.length - 1));
-        System.out.println(test.binarySearchIterative(nums1, 1));
-
-        Map<Integer, int[]> adjList = new HashMap<>();
-        adjList.put(0, new int[]{});
-        adjList.put(1, new int[]{0});
-        adjList.put(2, new int[]{0});
-        adjList.put(3, new int[]{1, 2});
-        adjList.put(4, new int[]{3});
-        adjList.put(5, new int[]{1, 2, 4});
-        adjList.put(6, new int[]{3, 4});
-//        0, 1, 2, 3, 4
-        try {
-            System.out.println(Arrays.toString(test.sortDependencies(adjList)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        int[][] image = new int[4][4];
-        image[0] = new int[]{1,2,3,4};
-        image[1] = new int[]{5,6,7,8};
-        image[2] = new int[]{9,10,11,12};
-        image[3] = new int[]{13,14,15,16};
-
-        System.out.println(Arrays.toString(new int[]{1, 6, 3, 7, 2, 4, 9, 8, 5,4,5,6,7,8,7,6,5,6,7,8,7,6,44,3,2,1,2,939,5}));
-        System.out.println(Arrays.toString(test.bubbleSort(new int[]{1, 6, 3, 7, 2, 4, 9, 8, 5,4,5,6,7,8,7,6,5,6,7,8,7,6,44,3,2,1,2,939,5})));
-        System.out.println(test.firstNonDuplicate("abbccdeefgghh"));
-        System.out.println(test.firstDuplicate(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 6, 1, 2, 3, 4, 5, 6, 7, 8}));
-
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                System.out.print(image[i][j]);
-            }
-            System.out.print("\n");
-        }
-        test.rotateImage(image, 360);
-        // test.rotateImage(image, 90);
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                System.out.print(image[i][j]);
-            }
-            System.out.print("\n");
-        }
-
-        //[[10:30, 12:00],[13:30, 14:00],[14:30, 16:00],[16:30, 18:00]]
-        //[[8:30, 9:00],[10:30, 12:00],[13:00, 17:00]]
-        //[8:30, 18:00]
-        //[8:00, 18:00]
-        //30
-        //
-        //[[8:30, 9:00],[10:30, 12:00],[13:00, 17:00]]
-        //[[9:00,10:30], [12:00,13:00]]
-        List<String> meeting1 = new ArrayList<>();
-        meeting1.add("8:30");
-        meeting1.add("9:00");
-        List<String> meeting8 = new ArrayList<>();
-        meeting8.add("9:00");
-        meeting8.add("9:30");
-        List<String> meeting2 = new ArrayList<>();
-        meeting2.add("10:30");
-        meeting2.add("12:00");
-        List<String> meeting3 = new ArrayList<>();
-        meeting3.add("13:00");
-        meeting3.add("17:00");
-        List<String> meeting4 = new ArrayList<>();
-        meeting4.add("10:30");
-        meeting4.add("12:00");
-        List<String> meeting5 = new ArrayList<>();
-        meeting5.add("13:30");
-        meeting5.add("14:00");
-        List<String> meeting6 = new ArrayList<>();
-        meeting6.add("14:30");
-        meeting6.add("15:00");
-        List<String> meeting9 = new ArrayList<>();
-        meeting9.add("15:00");
-        meeting9.add("15:30");
-        List<String> meeting10 = new ArrayList<>();
-        meeting10.add("15:30");
-        meeting10.add("16:00");
-        List<String> meeting11 = new ArrayList<>();
-        meeting11.add("16:30");
-        meeting11.add("17:00");
-        List<String> meeting12 = new ArrayList<>();
-        meeting12.add("17:00");
-        meeting12.add("17:30");
-        List<String> meeting7 = new ArrayList<>();
-        meeting7.add("17:30");
-        meeting7.add("18:00");
-
-        List<List<String>> cal1 = new ArrayList<>();
-        cal1.add(meeting4);
-        cal1.add(meeting5);
-        cal1.add(meeting6);
-        cal1.add(meeting9);
-        cal1.add(meeting10);
-        cal1.add(meeting11);
-        cal1.add(meeting12);
-        cal1.add(meeting7);
-        List<List<String>> cal2 = new ArrayList<>();
-        cal2.add(meeting1);
-        cal2.add(meeting8);
-        cal2.add(meeting2);
-        cal2.add(meeting3);
-        List<String> rang1 = new ArrayList<>();
-        rang1.add("8:00");
-        rang1.add("16:00");
-        List<String> rang2 = new ArrayList<>();
-        rang2.add("8:30");
-        rang2.add("18:00");
-        int duration = 60;
-        test.avail(cal1, cal2, rang1, rang2, duration).forEach(strings -> System.out.print(Arrays.toString(strings)));
-    }
+//    public static void main(String[] args) {
+//
+//        Node dataEntry = new Node("dataEntry", new Node[]{});
+//        Node coordinator = new Node("coordinator", new Node[]{});
+//        Node bookkeeper = new Node("bookkeeper", new Node[]{});
+//        Node technician = new Node("technician", new Node[]{});
+//        Node dataAnalyst = new Node("dataAnalyst", new Node[]{});
+//        Node accountant = new Node("accountant", new Node[]{});
+//        Node accountingManager = new Node("accountingManager", accountant, bookkeeper);
+//        Node engineer = new Node("engineer", new Node[]{});
+//        Node salesman = new Node("salesman", new Node[]{});
+//        Node salesManager = new Node("salesManager", salesman, dataAnalyst, dataEntry, coordinator);
+//        Node engineeringManager = new Node("engineeringManager", dataAnalyst, engineer, dataEntry, technician);
+//        Node boss = new Node("ceo", salesManager, engineeringManager, accountingManager);
+//        Test test = new Test();
+//        //find the common boss of 2 employees
+//        System.out.println(test.commonBoss(boss, "bookkeeper", "salesman"));
+//        //find if there is a path between 2 nodes -> [] or [node1, node2]
+//
+//        System.out.println(test.numOfSteps(4, new int[]{1, 2}));
+//        //1. make sure steps is over 1
+//        //2. for each move
+//        //3. add move up with itself until if it equlas the num of steps
+//        //4. if it does increment a counter
+//        //5. return the counter
+//        int[] nums = {1, 2, 4, 4};
+//        int[] nums1 = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//        System.out.println(test.findSum(nums, 8));
+//        System.out.println(test.findSumSorted(nums, 8));
+//        System.out.println(test.binarySearch(nums1, 2, 0, nums1.length - 1));
+//        System.out.println(test.binarySearchIterative(nums1, 1));
+//
+//        Map<Integer, int[]> adjList = new HashMap<>();
+//        adjList.put(0, new int[]{});
+//        adjList.put(1, new int[]{0});
+//        adjList.put(2, new int[]{0});
+//        adjList.put(3, new int[]{1, 2});
+//        adjList.put(4, new int[]{3});
+//        adjList.put(5, new int[]{1, 2, 4});
+//        adjList.put(6, new int[]{3, 4});
+////        0, 1, 2, 3, 4
+//        try {
+//            System.out.println(Arrays.toString(test.sortDependencies(adjList)));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        int[][] image = new int[4][4];
+//        image[0] = new int[]{1,2,3,4};
+//        image[1] = new int[]{5,6,7,8};
+//        image[2] = new int[]{9,10,11,12};
+//        image[3] = new int[]{13,14,15,16};
+//
+//        System.out.println(Arrays.toString(new int[]{1, 6, 3, 7, 2, 4, 9, 8, 5,4,5,6,7,8,7,6,5,6,7,8,7,6,44,3,2,1,2,939,5}));
+//        System.out.println(Arrays.toString(test.bubbleSort(new int[]{1, 6, 3, 7, 2, 4, 9, 8, 5,4,5,6,7,8,7,6,5,6,7,8,7,6,44,3,2,1,2,939,5})));
+//        System.out.println(test.firstNonDuplicate("abbccdeefgghh"));
+//        System.out.println(test.firstDuplicate(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 6, 1, 2, 3, 4, 5, 6, 7, 8}));
+//
+//        for (int i = 0; i < image.length; i++) {
+//            for (int j = 0; j < image[i].length; j++) {
+//                System.out.print(image[i][j]);
+//            }
+//            System.out.print("\n");
+//        }
+//        test.rotateImage(image, 360);
+//        // test.rotateImage(image, 90);
+//        for (int i = 0; i < image.length; i++) {
+//            for (int j = 0; j < image[i].length; j++) {
+//                System.out.print(image[i][j]);
+//            }
+//            System.out.print("\n");
+//        }
+//
+//        //[[10:30, 12:00],[13:30, 14:00],[14:30, 16:00],[16:30, 18:00]]
+//        //[[8:30, 9:00],[10:30, 12:00],[13:00, 17:00]]
+//        //[8:30, 18:00]
+//        //[8:00, 18:00]
+//        //30
+//        //
+//        //[[8:30, 9:00],[10:30, 12:00],[13:00, 17:00]]
+//        //[[9:00,10:30], [12:00,13:00]]
+//        List<String> meeting1 = new ArrayList<>();
+//        meeting1.add("8:30");
+//        meeting1.add("9:00");
+//        List<String> meeting8 = new ArrayList<>();
+//        meeting8.add("9:00");
+//        meeting8.add("9:30");
+//        List<String> meeting2 = new ArrayList<>();
+//        meeting2.add("10:30");
+//        meeting2.add("12:00");
+//        List<String> meeting3 = new ArrayList<>();
+//        meeting3.add("13:00");
+//        meeting3.add("17:00");
+//        List<String> meeting4 = new ArrayList<>();
+//        meeting4.add("10:30");
+//        meeting4.add("12:00");
+//        List<String> meeting5 = new ArrayList<>();
+//        meeting5.add("13:30");
+//        meeting5.add("14:00");
+//        List<String> meeting6 = new ArrayList<>();
+//        meeting6.add("14:30");
+//        meeting6.add("15:00");
+//        List<String> meeting9 = new ArrayList<>();
+//        meeting9.add("15:00");
+//        meeting9.add("15:30");
+//        List<String> meeting10 = new ArrayList<>();
+//        meeting10.add("15:30");
+//        meeting10.add("16:00");
+//        List<String> meeting11 = new ArrayList<>();
+//        meeting11.add("16:30");
+//        meeting11.add("17:00");
+//        List<String> meeting12 = new ArrayList<>();
+//        meeting12.add("17:00");
+//        meeting12.add("17:30");
+//        List<String> meeting7 = new ArrayList<>();
+//        meeting7.add("17:30");
+//        meeting7.add("18:00");
+//
+//        List<List<String>> cal1 = new ArrayList<>();
+//        cal1.add(meeting4);
+//        cal1.add(meeting5);
+//        cal1.add(meeting6);
+//        cal1.add(meeting9);
+//        cal1.add(meeting10);
+//        cal1.add(meeting11);
+//        cal1.add(meeting12);
+//        cal1.add(meeting7);
+//        List<List<String>> cal2 = new ArrayList<>();
+//        cal2.add(meeting1);
+//        cal2.add(meeting8);
+//        cal2.add(meeting2);
+//        cal2.add(meeting3);
+//        List<String> rang1 = new ArrayList<>();
+//        rang1.add("8:00");
+//        rang1.add("16:00");
+//        List<String> rang2 = new ArrayList<>();
+//        rang2.add("8:30");
+//        rang2.add("18:00");
+//        int duration = 60;
+//        test.avail(cal1, cal2, rang1, rang2, duration).forEach(strings -> System.out.print(Arrays.toString(strings)));
+//    }
 }
