@@ -108,12 +108,6 @@ class KMeansCluster {
                 initialClusters.get(closestCluster).addData(dataSet[j]);
             }
 
-//            for (int j = 0; j < initialClusters.size(); j++) {
-//                if(initialClusters.get(j).getData().size() != 0) {
-//                    newList.add(initialClusters.get(j));
-//                }
-//            }
-
             Collections.sort(initialClusters, (s1, s2) -> Double.valueOf(s1.getVariance() - s2.getVariance()).intValue());
             results.put(String.valueOf(i), initialClusters);
 

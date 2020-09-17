@@ -234,33 +234,6 @@ public class GraphTheory {
         return nodesInNextLayer;
     }
 
-
-    public static Integer GeneratePreferredNumbers(int[] listOfNotPreffered, int max, int min)
-    {
-        Random rand = new Random();
-        int randomNum;
-        int retry = 2; //increasing this lessons the likely of our non-preferred numbers to show up
-        HashSet<Integer> notPrefer = new HashSet<>();
-
-        //add all the numbers we don't want to generate into a HashSet for easy lookup
-        for(int index = 0; index < listOfNotPreffered.length; index++)
-            notPrefer.add(listOfNotPreffered[index]);
-
-        do {
-            randomNum = rand.nextInt((max - min) + 1) + min;
-            if(notPrefer.contains(randomNum))
-            {
-                retry--;
-            }
-            //we found a good value, let's return it
-            else{
-                retry = 0;
-            }
-        } while (retry > 0);
-
-        return randomNum;
-    }
-
     public static void main(String[] args) {
         /** PATH FINDING ALGORITHM
          * 1. FIRST DETERMINE IF A PATH EXISTS(BFS)
@@ -333,10 +306,10 @@ public class GraphTheory {
         while(times-- > 0) {
             for (int i = 0; i < grid.length; i++) {
                 for (int j = 0; j < grid[i].length; j++) {
-                    grid[i][j] = strings[GeneratePreferredNumbers(listOfNumbers, max, min)];
+                    grid[i][j] = strings[Utils.GeneratePreferredNumbers(listOfNumbers, max, min)];
                 }
             }
-            System.out.print(GeneratePreferredNumbers(listOfNumbers, max, min) + " ");
+            System.out.print(Utils.GeneratePreferredNumbers(listOfNumbers, max, min) + " ");
         }
         System.out.println("\n");
 //        set start and end for console display
